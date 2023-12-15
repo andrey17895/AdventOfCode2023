@@ -75,9 +75,5 @@ object D11_2 {
         return map.withIndex().filter { it.value.all { ch -> ch == '.' } }.map { it.index }
     }
 
-    fun <T> List<List<T>>.transpose(): List<List<T>> {
-        return (this[0].indices).map { i -> (this.indices).map { j -> this[j][i] } }
-    }
-
 
 }

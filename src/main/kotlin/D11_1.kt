@@ -70,10 +70,4 @@ object D11_1 {
     private fun expandVertical(map: GalaxyMap): GalaxyMap {
         return map.flatMap { if (it.all { ch -> ch == '.' }) listOf(it, it) else listOf(it) }
     }
-
-    fun <T> List<List<T>>.transpose(): List<List<T>> {
-        return (this[0].indices).map { i -> (this.indices).map { j -> this[j][i] } }
-    }
-
-
 }
