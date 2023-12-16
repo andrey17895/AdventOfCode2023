@@ -55,6 +55,8 @@ object D16_1 {
             }
         }
 
+        visualiseMap(visitationMap)
+
         return visitationMap.sumOf { row ->
             row.count {
                 it.size > 0
@@ -105,5 +107,23 @@ object D16_1 {
         }),
     }
 
+    private fun visualiseMap(map: List<List<List<Dir>>>) {
+        println()
+        map.forEach { row ->
+            row.forEach { print(
+                when {
+                    it.size == 1 -> when (it.first()) {
+                        Dir.UP -> '↑'
+                        Dir.DOWN -> '↓'
+                        Dir.LEFT -> '←'
+                        Dir.RIGHT -> '→'
+                    }
+                    it.size > 1 -> it.size
+                    else -> '.'
+                }
+            ) }
+            println()
+        }
+    }
 
 }
