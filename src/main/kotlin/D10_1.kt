@@ -73,10 +73,4 @@ object D10_1 {
 
     data class Position(val col: Int, val row: Int)
 
-    enum class Dir(val row: Int, val col: Int) {
-        UP(-1, 0),
-        DOWN(1, 0),
-        LEFT(0, -1),
-        RIGHT(0, 1)
-    }
 }
