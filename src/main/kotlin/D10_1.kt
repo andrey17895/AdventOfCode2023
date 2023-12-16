@@ -1,4 +1,9 @@
-import D10_1.charToDir
+import Dir.UP
+import Dir.DOWN
+import Dir.LEFT
+import Dir.RIGHT
+import java.util.Optional
+import kotlin.jvm.optionals.getOrElse
 
 typealias MutablePipeMap = MutableList<MutableList<Char>>
 typealias PipeMap = List<List<Char>>
@@ -8,7 +13,7 @@ object D10_1 {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val input = readInput("10/sample.txt")
+        val input: String = readInput("10/sample.txt")
         println(input)
         val answer = solve(input)
         println(answer)
@@ -18,59 +23,83 @@ object D10_1 {
         val result = solve(readInput("10/input.txt"))
         println("===================")
         println(result)
-        val expected2 = 1939607039
+        val expected2 = 6733
         check(result == expected2) { "Expected: $expected2, Actual: $result" }
     }
 
     private const val START_CHAR = 'S'
-    private const val VISITED = '*'
     private fun solve(input: String): Any {
-        val spited = input.split("\n").map { it.toMutableList() }.toMutableList()
-        val (startRow, startCol) = findCharPosition(spited, START_CHAR)
-        findLoop(spited, Position(startRow, startCol))
-        return startRow to startCol
+        val charMap = input.split("\n").map { it.toList() }
+        val startPosition = findStart(charMap, START_CHAR)
+        val tileMap = charMap.map { row ->
+            row.map { charToTile(it) }
+        }
+
+        val length = Dir.entries.asSequence().map { solvePipe(tileMap, startPosition, it) }
+            .first { it != -1 }
+        return length / 2
     }
 
-    private fun findCharPosition(map: PipeMap, c: Char): Pair<Int, Int> {
+    private fun solvePipe(tileMap: List<List<Tile>>, startPosition: Pos, startDir: Dir): Int {
+
+        val hBound = tileMap[0].indices
+        val vBound = tileMap.indices
+
+        var currentPosition = startPosition + startDir.delta
+        if (!checkBoundaries(currentPosition, hBound, vBound))
+            return -1
+        var currentTile = tileMap[currentPosition.row][currentPosition.col]
+        var currentDir = startDir
+        var length = 0
+
+        while (true) {
+            length += 1
+            if (currentTile == Tile.S) return length
+            currentDir = currentTile.move(currentDir).getOrElse { return -1 }
+            currentPosition += currentDir.delta
+            if (!checkBoundaries(currentPosition, hBound, vBound))
+                return -1
+            currentTile = tileMap[currentPosition.row][currentPosition.col]
+        }
+    }
+
+    private fun checkBoundaries(pos: Pos, hBound: IntRange, vBound: IntRange): Boolean =
+        pos.row in vBound && pos.col in hBound
+
+    private fun charToTile(it: Char) = when (it) {
+        '|' -> Tile.V
+        '-' -> Tile.H
+        'L' -> Tile.UR
+        'J' -> Tile.UL
+        '7' -> Tile.DL
+        'F' -> Tile.DR
+        '.' -> Tile.E
+        'S' -> Tile.S
+        else -> error("Unknown tile $it")
+    }
+
+
+    private enum class Tile(val map: Map<Dir, Dir>) {
+        V(mapOf(UP to UP, DOWN to DOWN)),
+        H(mapOf(LEFT to LEFT, RIGHT to RIGHT)),
+        UR(mapOf(DOWN to RIGHT, LEFT to UP)),
+        UL(mapOf(DOWN to LEFT, RIGHT to UP)),
+        DR(mapOf(UP to RIGHT, LEFT to DOWN)),
+        DL(mapOf(RIGHT to DOWN, UP to LEFT)),
+        S(mapOf()),
+        E(mapOf());
+
+        fun move(dir: Dir): Optional<Dir> = Optional.ofNullable(map[dir])
+
+    }
+
+    private fun findStart(map: PipeMap, c: Char): Pos {
         val row = map.indexOfFirst { it.contains(c) }
         check(row != -1) { "Couldn't find line with '$c'" }
         val column = map[row].indexOf(c)
         check(column != -1) { "Couldn't find column with '$c'" }
-        return row to column
+        return Pos(row, column)
     }
 
-    private fun findLoop(map: MutablePipeMap, startPosition: Position): List<Pair<Int, Int>> {
-        var currentPosition = startPosition
-        if (checkConnection(map, currentPosition, Dir.RIGHT)) {
-
-        }
-        return emptyList()
-    }
-
-    private fun checkConnection(map: PipeMap, positon: Position, direction: Dir): Boolean {
-        return charToDir[map[positon.row + direction.row][positon.col + direction.col]]
-            ?.contains(oppositeDir[direction]) ?: false
-    }
-
-
-    private val charToDir = mapOf(
-        '|' to listOf(Dir.UP, Dir.DOWN),
-        '-' to listOf(Dir.LEFT, Dir.RIGHT),
-        'L' to listOf(Dir.UP, Dir.RIGHT),
-        'J' to listOf(Dir.UP, Dir.LEFT),
-        '7' to listOf(Dir.LEFT, Dir.DOWN),
-        'F' to listOf(Dir.RIGHT, Dir.DOWN),
-    )
-
-    private val oppositeDir = mapOf(
-        Dir.UP to Dir.DOWN,
-        Dir.DOWN to Dir.UP,
-        Dir.LEFT to Dir.RIGHT,
-        Dir.RIGHT to Dir.LEFT
-    )
-
-    val pipes = charToDir.keys
-
-    data class Position(val col: Int, val row: Int)
 
 }
