@@ -1,5 +1,3 @@
-import java.util.Stack
-
 object D16_1 {
 
     private const val DAY = 16
@@ -16,8 +14,8 @@ object D16_1 {
         val result = solve(readInput("$DAY/input.txt"))
         println("===================")
         println(result)
-//        val expected2 = 508552
-//        check(result == expected2) { "Expected: $expected2, Actual: $result" }
+        val expected2 = 7434
+        check(result == expected2) { "Expected: $expected2, Actual: $result" }
     }
 
     private fun solve(input: String): Any {
@@ -57,14 +55,6 @@ object D16_1 {
             }
         }
 
-        println()
-        visitationMap.forEach{
-            it.forEach{
-                print(if(it.size > 0) '#' else '.')
-            }
-            println()
-        }
-
         return visitationMap.sumOf { row ->
             row.count {
                 it.size > 0
@@ -85,16 +75,16 @@ object D16_1 {
         EMPTY({ dir -> listOf(dir) }),
         FWD_MIRROR({ dir ->
             when (dir) {
-                Dir.LEFT -> listOf(Dir.UP)
-                Dir.RIGHT -> listOf(Dir.DOWN)
+                Dir.LEFT -> listOf(Dir.DOWN)
+                Dir.RIGHT -> listOf(Dir.UP)
                 Dir.UP -> listOf(Dir.RIGHT)
                 Dir.DOWN -> listOf(Dir.LEFT)
             }
         }),
         BCW_MIRROR({ dir ->
             when (dir) {
-                Dir.LEFT -> listOf(Dir.DOWN)
-                Dir.RIGHT -> listOf(Dir.UP)
+                Dir.LEFT -> listOf(Dir.UP)
+                Dir.RIGHT -> listOf(Dir.DOWN)
                 Dir.UP -> listOf(Dir.LEFT)
                 Dir.DOWN -> listOf(Dir.RIGHT)
             }
