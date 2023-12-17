@@ -16,7 +16,7 @@ object D10_2 {
     fun main(args: Array<String>) {
 //        checkSolution("10/sample2.txt", 4)
         println("===================")
-        checkSolution("10/input.txt", 1)
+        checkSolution("10/input.txt", 435)
         println("===================")
     }
 
