@@ -17,8 +17,8 @@ object D13_2 {
         val result = solve(readInput("$DAY/input.txt"))
         println("===================")
         println(result)
-//        val expected2 = 27742
-//        check(result == expected2) { "Expected: $expected2, Actual: $result" }
+        val expected2 = 32728
+        check(result == expected2) { "Expected: $expected2, Actual: $result" }
     }
 
     private fun solve(input: String): Any {
@@ -52,7 +52,7 @@ object D13_2 {
     ): Boolean {
         val range = if (i + 1 < map.size - i) i else map.size - i - 2
         val difference = (0..range).sumOf { countDifference(map[i - it], map[i + 1 + it]) }
-        return difference < 2
+        return difference == 1
     }
 
     private fun countDifference(chars1: List<Char>, chars2: List<Char>): Int =
