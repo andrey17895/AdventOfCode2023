@@ -6,8 +6,6 @@ object D17_2 {
 
     private const val DAY = 17
 
-    //732 - low
-
     private fun checkSolution(res: String, expected: Int?) {
         val input: String = readInput(res)
 //        println(input)
@@ -112,15 +110,9 @@ object D17_2 {
         val pathPrice = tilePrice + accumulatedPrice
         val tileWeight = weights[pos.row][pos.col]
 
-//        if (pos == endPos && stepsTaken < 4) return emptyList()
-
         val currentBestPrice = weights[endPos.row][endPos.col].values.minOrNull()
         if (currentBestPrice != null && pathPrice > currentBestPrice) return emptyList()
 
-
-//        if (tileWeight.containsKey(dir to remainingSteps) && (pathPrice > (tileWeight.values.minOrNull()
-//                ?: Int.MAX_VALUE))
-//        ) {
         if (tileWeight.containsKey(dir to stepsTaken) && (pathPrice > tileWeight[dir to stepsTaken]!!)) {
             return emptyList()
         } else {
@@ -144,19 +136,6 @@ object D17_2 {
                 depth + 1
             )
         }
-
-//        possibleMoves.forEach { moveDir ->
-//            findRoutes(
-//                pos + moveDir.delta,
-//                moveDir,
-//                pathPrice,
-//                if (moveDir != dir) 2 else remainingSteps - 1,
-//                endPos,
-//                map,
-//                weights,
-//            )
-//        }
-
     }
 
     private fun findMoves(pos: Pos, dir: Dir, takenSteps: Int, vBorder: IntRange, hBorder: IntRange): List<Dir> {
