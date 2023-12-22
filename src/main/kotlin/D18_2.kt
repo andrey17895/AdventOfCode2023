@@ -21,8 +21,8 @@ object D18_2 {
     @JvmStatic
     fun main(args: Array<String>) {
 //        checkSolution("$DAY/sample.txt", null)
-//        checkSolution("$DAY/sample.txt", 952_408_144_115L)
-        checkSolution("$DAY/input.txt", null)
+        checkSolution("$DAY/sample.txt", 952_408_144_115L)
+//        checkSolution("$DAY/input.txt", null)
     }
 
     private fun solve(input: String): Any {
@@ -51,12 +51,15 @@ object D18_2 {
             dir to count
         }
 
-        instructions.forEach { (dir, count) -> repeat(count) {
-            currentPosition += dir.delta
-            visited.add(currentPosition)
-        } }
-
         val sumOutside = instructions.sumOf { (_, count) -> count.toLong() }
+        println("Trench length: $sumOutside")
+        instructions.forEach { (dir, count) ->
+            repeat(count) {
+                currentPosition += dir.delta
+                visited.add(currentPosition)
+            }
+        }
+
 
         println(String.format("%,d", sumOutside))
         println(visited.maxOf { it.col })
@@ -67,14 +70,14 @@ object D18_2 {
 
         val transactions = List(maxV + 1) { PriorityQueue<Int>() }
 
-        visited.asSequence().windowed(3).forEach {(e1,e2,e3) ->
-            if (
-                e1.col == e2.col && e2.col == e3.col ||
-                e2 + Dir.UP.delta == e1 && e2 + Dir.RIGHT.delta == e3 ||
-                e2 + Dir.UP.delta == e3 && e2 + Dir.RIGHT.delta == e1 ||
-                e2 + Dir.UP.delta == e1 && e2 + Dir.LEFT.delta == e3 ||
-                e2 + Dir.UP.delta == e3 && e2 + Dir.LEFT.delta == e1
-            ) {
+
+        if(checkTransition(visited[visited.size -2],visited[visited.size -1], visited[0])){
+            val initialPosition = visited[visited.size - 1]
+            transactions[initialPosition.row].add(initialPosition.col)
+        }
+
+        visited.asSequence().windowed(3).forEach { (e1, e2, e3) ->
+            if (checkTransition(e1, e2, e3)) {
                 transactions[e2.row].add(e2.col)
             }
         }
@@ -91,6 +94,12 @@ object D18_2 {
 //        return countFilledTiles(visited)
         return sumOutside + sumInside
     }
+
+    private fun checkTransition(e1: Pos, e2: Pos, e3: Pos) = e1.col == e2.col && e2.col == e3.col ||
+            e2 + Dir.UP.delta == e1 && e2 + Dir.RIGHT.delta == e3 ||
+            e2 + Dir.UP.delta == e3 && e2 + Dir.RIGHT.delta == e1 ||
+            e2 + Dir.UP.delta == e1 && e2 + Dir.LEFT.delta == e3 ||
+            e2 + Dir.UP.delta == e3 && e2 + Dir.LEFT.delta == e1
 
     private fun printVisited(visited: Set<Pos>) {
 
