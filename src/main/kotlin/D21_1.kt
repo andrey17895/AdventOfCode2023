@@ -39,17 +39,20 @@ object D21_1 {
         }.toMutableList()
 
 
-        val stack = Stack<Pair<Pos, Int>>()
-        stack.push(startPos to 0)
+        val stack = PriorityQueue<Cursor>()
+        stack.add(Cursor(0, startPos))
 
         while (stack.size > 0) {
-            val (pos, distance) = stack.pop()
+            val (distance, pos) = stack.poll()
             if (distance < weightMap[pos.row][pos.col]) {
                 weightMap[pos.row][pos.col] = distance
                 Dir.entries.forEach {
                     val newPos = pos + it.delta
-                    if (newPos.row in weightMap.indices && newPos.col in weightMap[0].indices)
-                        stack.push(newPos to distance + 1)
+                    if (
+                        newPos.row in weightMap.indices
+                        && newPos.col in weightMap[0].indices
+                        && weightMap[newPos.row][newPos.col] > distance + 1)
+                        stack.add(Cursor(distance + 1, newPos))
                 }
             }
         }
@@ -63,5 +66,10 @@ object D21_1 {
         }
     }
 
+    data class Cursor(val step: Int, val pos: Pos): Comparable<Cursor> {
+        override fun compareTo(other: Cursor): Int {
+            return this.step - other.step
+        }
+    }
 
 }
