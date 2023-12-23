@@ -5,12 +5,16 @@ object D21_2 {
 
     private const val DAY = 21
 
-    private fun checkSolution(res: String, steps: Int, expected: Any?) {
+    private fun checkSolution(solution: () -> Any, expected: Any?) {
         val duration = measureTime {
-            val answer = solve(readInput(res), steps)
-            println(answer)
-            if (expected != null)
+            val answer = solution()
+            if (expected != null) {
                 check(answer.toString() == expected.toString()) { "Expected: $expected, Actual: $answer" }
+                println("Right answer: $answer")
+            }
+            else {
+                println("Answer: $answer")
+            }
         }
         println("Time taken: $duration")
         println("===================")
@@ -18,13 +22,13 @@ object D21_2 {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        checkSolution("$DAY/sample.txt", 6, 16)
-        checkSolution("$DAY/sample.txt", 10, 50)
-        checkSolution("$DAY/sample.txt", 50, 1594)
-        checkSolution("$DAY/sample.txt", 100, 6536)
-        checkSolution("$DAY/sample.txt", 500, 167004)
-        checkSolution("$DAY/sample.txt", 1000, 668697)
-        checkSolution("$DAY/sample.txt", 5000, 16733044)
+        checkSolution({ solve(readInput("$DAY/sample.txt"), 6) }, 16)
+        checkSolution({ solve(readInput("$DAY/sample.txt"), 10) }, 50)
+        checkSolution({ solve(readInput("$DAY/sample.txt"), 50) }, 1594)
+        checkSolution({ solve(readInput("$DAY/sample.txt"), 100) }, 6536)
+        checkSolution({ solve(readInput("$DAY/sample.txt"), 500) }, 167004)
+        checkSolution({ solve(readInput("$DAY/sample.txt"), 1000) }, 668697)
+        checkSolution({ solve(readInput("$DAY/sample.txt"), 5000) }, 16733044)
 //        checkSolution("$DAY/input.txt", 26_501_365, null)
     }
 
