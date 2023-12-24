@@ -1,6 +1,3 @@
-import java.util.PriorityQueue
-import kotlin.time.measureTime
-
 object D22_1 {
 
     private const val DAY = 22
@@ -8,7 +5,7 @@ object D22_1 {
     @JvmStatic
     fun main(args: Array<String>) {
         checkSolution({ solve(readInput("$DAY/sample.txt")) }, 94)
-        checkSolution({ solve(readInput("$DAY/input.txt")) }, null)
+        checkSolution({ solve(readInput("$DAY/input.txt")) }, 2442)
     }
 
     private fun solve(input: String): Any {
