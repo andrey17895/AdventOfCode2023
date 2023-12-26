@@ -5,7 +5,7 @@ object D19_1 {
     @JvmStatic
     fun main(args: Array<String>) {
         checkSolution({ solve(readInput("$DAY/sample.txt")) }, 19114)
-        checkSolution({ solve(readInput("$DAY/input.txt")) }, null)
+        checkSolution({ solve(readInput("$DAY/input.txt")) }, 432434)
     }
 
     private fun solve(input: String): Any {
@@ -52,7 +52,7 @@ object D19_1 {
         abstract fun process(part: Part): ProcessResult
     }
 
-    private class ConditionalStep(val condition: String) : Step() {
+    private class ConditionalStep(condition: String) : Step() {
 
         val categorySymbol = condition.first()
         val conditionSymbol = condition[1]
