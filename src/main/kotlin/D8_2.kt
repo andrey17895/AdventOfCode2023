@@ -4,54 +4,52 @@ object D8_2 {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val input = readInput("08/sample2.txt")
-        val answer = solve(input)
-        println(answer)
-        val expected = 6L
-        val time = measureTime {
-            check(answer == expected) { "Expected: $expected, Actual: $answer" }
-            println("===================")
-            val result = solve(readInput("08/input.txt"))
-            println("===================")
-            println(result)
-        }
-        println(time)
-//        val expected2 = 253933213
-//        check(result == expected2) { "Expected: $expected2, Actual: $result" }
+        checkSolution({ solve(readInput("08/sample2.txt")) }, 6)
+        checkSolution({ solve(readInput("08/input.txt")) }, 18625484023687)
     }
 
     private fun solve(input: String): Any {
-        val splitted = input.split("\n")
-        val path = splitted.first()
-        val map = splitted.drop(2).associate {
+        val split = input.split("\n")
+        val path = split.first()
+        val map = split.drop(2).associate {
             val (current, left, right) = """(.+) = \((.+), (.+)\)""".toRegex().find(it)!!.destructured
             current to Pair(left, right)
         }
 
-        val ghostsStart = map.keys.filter { it.endsWith("A") }
-        val ghosts = ghostsStart.toMutableList()
+        return map.keys.filter { it.endsWith("A") }
+            .map { countSteps(it, map, path) }
+            .reduce { acc, l -> acc.lcm(l) }
 
-        var count = 0L
+    }
 
-        while ( ghosts.any { !it.endsWith("Z") }) {
-            for (i in ghosts.indices) {
-                val directions = map[ghosts[i]] ?: error("no node ${ghosts[i]} in the map")
-                val direction = path[(count % path.length).toInt()]
-                ghosts[i] = when (direction) {
-                    'L' -> directions.first
-                    'R' -> directions.second
-                    else -> error("unknown input: $direction")
-                }
+    private fun countSteps(start: String, map: Map<String, Pair<String, String>>, path: String): Long {
+        var count = 0
+        var currentPlace = start
+
+        while (!currentPlace.endsWith("Z")) {
+            val directions = map[currentPlace] ?: error("no node $currentPlace in the map")
+            val direction = path[count % path.length]
+            currentPlace = when (direction) {
+                'L' -> directions.first
+                'R' -> directions.second
+                else -> error("unknown input: $direction")
             }
             count += 1
-            if (count % 1_000_000 == 0L) {
-                println("%,d".format(count / 1_000_000))
-            }
-            if (count == Long.MAX_VALUE) {
-                error("!!!Overflow!!!")
-            }
         }
-        return count
+        return count.toLong()
+    }
+
+    private fun Long.lcm(other: Long): Long {
+        val larger = if (this > other) this else other
+        val maxLcm = this * other
+        var lcm = larger
+        while (lcm <= maxLcm) {
+            if (lcm % this == 0L && lcm % other == 0L) {
+                return lcm
+            }
+            lcm += larger
+        }
+        return maxLcm
     }
 }
 
